@@ -3,7 +3,7 @@
 #shellcheck disable=SC2034
 #shellcheck disable=SC2329
 
-source "$(dirname "$(readlink -e "$0")")/pro.sh"
+source "$(dirname "$(readlink -e "$0")")/BCPro.sh"
 (($?)) && exit 1
 
 # ========== Main ==========
@@ -11,24 +11,25 @@ source "$(dirname "$(readlink -e "$0")")/pro.sh"
 main() {
 
     # Library Usage!
-    spin-subproc channel p_channel
+    bcpro_init
 
     # Example
     local i j
     for j in {1..5}; do
         {
+            msg_head foo
+
             for i in {1..10}; do
-                noti "$i"
+                echo "$i"
             done
-        } > "${g_pipe[channel]}"
-        noti "num: $j" > "${g_pipe[channel]}"
+            echo "num: $j"
+        } > "$G_REL"
         sleep .4
     done
 
-    echo "EOP" > "${g_pipe[channel]}"
+    echo "EOP" > "$G_REL"
 
-    # fatal "cry"
-    wait "${g_subproc[channel]}"
+    wait "${g_proc[relay]}"
 
 }
 
